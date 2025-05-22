@@ -10,6 +10,7 @@ from adding.models import Pereval, Users, Coords, Image
 from adding.serializers import PerevalSerializer
 
 
+
 class PerevalView(APIView):
 
     def get(self, request: object, **kwargs) -> (Response):
@@ -35,9 +36,9 @@ class PerevalView(APIView):
         with transaction.atomic():
             other_titles = data.pop("other_titles", None)
             other_titles = [other_titles] if other_titles else []
-            data["beauty_title"] = data.pop("beautyTitle", None)
+            data["beauty_title"]: str = data.pop("beautyTitle", None)
 
-            user = data.pop("user")
+            user: dict = data.pop("user")
             user, created = Users.objects.get_or_create(
                 email=user["email"],
                 defaults={"email": user["email"], "username": user["email"], "first_name": user.get("name"),
@@ -45,7 +46,7 @@ class PerevalView(APIView):
             )
             data["added_user"] = user.id
 
-            coords = data.pop("coords")
+            coords: dict = data.pop("coords")
             coords, created = Coords.objects.get_or_create(
                 **coords
             )
@@ -56,9 +57,9 @@ class PerevalView(APIView):
                     data[season] = level
 
             #   Как быть, если картинки нет? :с
-            images = data.pop("images", None)
+            images: list = data.pop("images", None)
             if images:
-                images_ids = [img["data"] for img in images]
+                images_ids: list = [img["data"] for img in images]
 
             serializer = PerevalSerializer(data=data)
             if serializer.is_valid():
@@ -73,6 +74,8 @@ class PerevalView(APIView):
 
 @api_view(["POST"])
 def upload_img(request):
+    """ Апи для загрузки изображений в модель Image """
+
     img_data = request.FILES['image'].read()
 
     # Создаем изображение
