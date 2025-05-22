@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.functions import Now
 
 
+
 class Users(AbstractUser):
     patronymic = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
