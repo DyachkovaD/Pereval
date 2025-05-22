@@ -1,5 +1,3 @@
-from importlib.metadata import requires
-
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -11,25 +9,42 @@ class Users(AbstractUser):
     phone = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta(AbstractUser.Meta):
-        managed = True
         db_table = "auth_user"
+        constraints = [
+            models.UniqueConstraint(fields=['email'], name='unique_email')
+        ]
+
+
+class Status(models.TextChoices):
+    NEW = "new",
+    PEND = "pending",
+    ACC = "accepted",
+    REJ = "rejected"
 
 
 class Pereval(models.Model):
     beauty_title = models.TextField(null=True, blank=True)
     title = models.TextField()
-    other_titles = ArrayField(models.CharField(), blank=True, null=True)
     connect = models.TextField(null=True, blank=True)
+
+    other_titles = ArrayField(models.CharField(), default=[])
     add_time = models.DateTimeField(db_default=Now())
+
     winter = models.CharField(max_length=10, null=True, blank=True)
     summer = models.CharField(max_length=10, null=True, blank=True)
     autumn = models.CharField(max_length=10, null=True, blank=True)
     spring = models.CharField(max_length=10, null=True, blank=True)
+    status = models.CharField(choices=Status.choices, max_length=10, default=Status.NEW)
     coord_id = models.ForeignKey(
         'adding.Coords',
         models.SET_NULL,
         null=True,
         blank=True,
+    )
+    added_user = models.ForeignKey(
+        'adding.Users',
+        models.SET_NULL,
+        null=True,
     )
 
     images = models.ManyToManyField('Image', through='PerevalImages', related_name='perevals')
