@@ -61,5 +61,5 @@ class PerevalView(APIView):
                 if images:
                     images_ids: list = [img["data"] for img in images]
                     Image.objects.filter(id__in=images_ids).update(pereval=serializer.instance)
-                return Response(serializer.data)
+                return Response({"status": 200, "message": "перевал успешно создан", "id": serializer.instance.id})
             return Response(serializer.errors)
