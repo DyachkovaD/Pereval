@@ -34,15 +34,11 @@ class PerevalView(APIView):
         data = request.data.copy()
 
         with transaction.atomic():
-            other_titles = data.pop("other_titles", None)
-            other_titles = [other_titles] if other_titles else []
-            data["beauty_title"]: str = data.pop("beautyTitle", None)
-
             user: dict = data.pop("user")
             user, created = Users.objects.get_or_create(
                 email=user["email"],
-                defaults={"email": user["email"], "username": user["email"], "first_name": user.get("name"),
-                          "last_name": user.get("fam"), "patronymic": user.get("otc"), "phone": user.get("phone")}
+                defaults={"email": user["email"], "name": user.get("name"),
+                          "fam": user.get("fam"), "otc": user.get("otc"), "phone": user.get("phone")}
             )
             data["added_user"] = user.id
 
@@ -58,30 +54,12 @@ class PerevalView(APIView):
 
             #   Как быть, если картинки нет? :с
             images: list = data.pop("images", None)
-            if images:
-                images_ids: list = [img["data"] for img in images]
 
             serializer = PerevalSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                serializer.instance.images.add(*images_ids)
-                serializer.instance.other_titles.extend(other_titles)
-                serializer.instance.save()
-
+                if images:
+                    images_ids: list = [img["data"] for img in images]
+                    Image.objects.filter(id__in=images_ids).update(pereval=serializer.instance)
                 return Response(serializer.data)
             return Response(serializer.errors)
-
-
-@api_view(["POST"])
-def upload_img(request):
-    """ Апи для загрузки изображений в модель Image """
-
-    img_data = request.FILES['image'].read()
-
-    # Создаем изображение
-    Image.objects.create(
-        date_added=timezone.localtime(),
-        img=img_data,
-        title=request.data.get('title', '')
-    )
-    return Response({"message": "Изображение успешно загружено"})
