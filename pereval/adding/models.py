@@ -5,15 +5,16 @@ from django.db.models.functions import Now
 
 
 
-class Users(AbstractUser):
-    patronymic = models.CharField(max_length=100, null=True, blank=True)
-    phone = models.CharField(max_length=100, null=True, blank=True)
+class Users(models.Model):
+    email = models.EmailField(unique=True)
+    fam = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    otc = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=25, null=True, blank=True)
 
-    class Meta(AbstractUser.Meta):
-        db_table = "auth_user"
-        constraints = [
-            models.UniqueConstraint(fields=['email'], name='unique_email')
-        ]
+    class Meta:
+        managed = True
+        db_table = "Users"
 
 
 class Status(models.TextChoices):
@@ -28,9 +29,9 @@ class Pereval(models.Model):
     title = models.TextField()
     connect = models.TextField(null=True, blank=True)
 
-    other_titles = ArrayField(models.CharField(), default=[])
     add_time = models.DateTimeField(db_default=Now())
 
+    other_titles = models.CharField(max_length=10, null=True, blank=True)
     winter = models.CharField(max_length=10, null=True, blank=True)
     summer = models.CharField(max_length=10, null=True, blank=True)
     autumn = models.CharField(max_length=10, null=True, blank=True)
@@ -47,8 +48,6 @@ class Pereval(models.Model):
         models.SET_NULL,
         null=True,
     )
-
-    images = models.ManyToManyField('Image', through='PerevalImages', related_name='perevals')
 
     class Meta:
         managed = True
@@ -69,19 +68,15 @@ class Image(models.Model):
     date_added = models.DateTimeField()
     img = models.BinaryField()
     title = models.TextField(null=True, blank=True)
+    pereval = models.ForeignKey(
+        'adding.Pereval',
+        models.CASCADE,
+        related_name='images',
+    )
 
     class Meta:
         managed = True
         db_table = "pereval_images"
-
-
-class PerevalImages(models.Model):
-    pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = True
-        db_table = "PerevalImages"
 
 
 class Area(models.Model):

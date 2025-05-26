@@ -1,10 +1,10 @@
 from django.urls import path
 
-from adding.views import PerevalView, upload_img
+from adding.views import PerevalView
 
 
 
 urlpatterns = [
-    path("pereval/", PerevalView.as_view()),
-    path("upload_img/", upload_img)
+    path("submitData/", PerevalView.as_view()),
+    path("submitData/<int:id>", PerevalView.as_view()),
 ]
