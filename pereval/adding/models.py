@@ -65,7 +65,7 @@ class Coords(models.Model):
 
 
 class Image(models.Model):
-    date_added = models.DateTimeField(db_default=Now())
+    date_added = models.DateTimeField(auto_now_add=True)
     img = models.BinaryField()
     title = models.TextField(null=True, blank=True)
     pereval = models.ForeignKey(

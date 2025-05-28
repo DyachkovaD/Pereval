@@ -1,5 +1,8 @@
+import base64
+from io import BytesIO
 from tkinter.scrolledtext import example
 
+from django.core.files.base import ContentFile
 from django.db import transaction
 from django.shortcuts import render
 from django.utils import timezone
@@ -226,8 +229,9 @@ class PerevalView(APIView):
                 serializer.save()
                 if images:
                     for image in images:
-                        image = Image.objects.create(img=image["data"], title=image['title'])
-                        image.pereval = serializer.instance
-                        image.save()
-                return Response({"status": 200, "message": "перевал успешно создан", "id": serializer.instance.id})
+                        # Декодируем base64 в бинарные данные (если нужно сохранить файл)
+                        decoded_data = base64.b64decode(image["data"])
+                        Image.objects.create(img=decoded_data, title=image['title'], pereval=serializer.instance)
+
+                return Response({"message": "перевал успешно создан", "id": serializer.instance.id, "status": 200})
             return Response({"message": serializer.errors, "status": 400}, status=status.HTTP_400_BAD_REQUEST)
