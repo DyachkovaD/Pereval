@@ -1,16 +1,9 @@
 import base64
-from io import BytesIO
-from tkinter.scrolledtext import example
 
-from django.core.files.base import ContentFile
 from django.db import transaction
-from django.shortcuts import render
-from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
-from pyexpat.errors import messages
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
