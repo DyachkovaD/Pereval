@@ -80,10 +80,10 @@ class PerevalView(APIView):
         try:
             snippet = Pereval.objects.get(id=id)
             snippet.delete()
-            snippet = PerevalSerializer(snippet)
+            serializer = PerevalSerializer(snippet)
         except Pereval.DoesNotExist:
             return Response({"message": "Перевал не найден"}, status=status.HTTP_404_NOT_FOUND)
-        return Response(snippet)
+        return Response(serializer.data)
 
     @extend_schema(
         summary="Изменить перевал",

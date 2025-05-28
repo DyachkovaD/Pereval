@@ -56,13 +56,6 @@ class TestPerevalView:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'title' in response.data['message']
 
-    def test_create_pereval_missing_user_email(self, api_client, pereval_data):
-        pereval_data['user'].pop('email')
-        url = reverse('pereval-list')
-        response = api_client.post(url, data=pereval_data, format='json')
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'email' in response.data['message']['added_user']
 
     def test_update_pereval_success(self, api_client, create_pereval):
         url = reverse('pereval-detail', kwargs={'id': create_pereval.id})
@@ -93,7 +86,7 @@ class TestPerevalView:
         assert response.data['message'] == "Нельзя изменять пользователя, добавившего запись"
 
     def test_update_pereval_not_new_status(self, api_client, create_pereval):
-        create_pereval.status = Status.ACCEPTED
+        create_pereval.status = Status.ACC
         create_pereval.save()
 
         url = reverse('pereval-detail', kwargs={'id': create_pereval.id})

@@ -29,9 +29,9 @@ class Pereval(models.Model):
     title = models.TextField()
     connect = models.TextField(null=True, blank=True)
 
-    add_time = models.DateTimeField(db_default=Now())
+    add_time = models.DateTimeField()
 
-    other_titles = models.CharField(max_length=10, null=True, blank=True)
+    other_titles = models.TextField(null=True, blank=True)
     winter = models.CharField(max_length=10, null=True, blank=True)
     summer = models.CharField(max_length=10, null=True, blank=True)
     autumn = models.CharField(max_length=10, null=True, blank=True)

@@ -32,7 +32,7 @@ def coords_data():
 @pytest.fixture
 def image_data():
     return {
-        "data": "base64encodedimagedata",
+        "data": "SGVsbG8gd29ybGQ=",
         "title": "Test Image"
     }
 
@@ -54,6 +54,7 @@ def pereval_data(user_data, coords_data, image_data, level_data):
         "beauty_title": "Test Beauty Title",
         "other_titles": "Test Other Titles",
         "connect": "Test Connect",
+        "add_time": "2021-09-22 13:18:13",
         "user": user_data,
         "coords": coords_data,
         "level": level_data,
@@ -74,6 +75,7 @@ def create_pereval(create_user, coords_data):
         beauty_title="Existing Beauty Title",
         other_titles="Existing Other Titles",
         connect="Existing Connect",
+        add_time="2021-09-22 13:18:13",
         added_user=create_user,
         coord_id=coords,
         status=Status.NEW
