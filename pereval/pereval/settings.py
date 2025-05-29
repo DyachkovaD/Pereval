@@ -85,8 +85,8 @@ DATABASES = {
         'NAME': os.getenv('FSTR_DB_NAME'),
         'USER': os.getenv('FSTR_DB_LOGIN'),
         'PASSWORD': os.getenv('FSTR_DB_PASS'),
-        'HOST': os.getenv('FSTR_DB_HOST'),
-        'PORT': os.getenv('FSTR_DB_PORT'),
+        'HOST': os.getenv('FSTR_DB_HOST', 'db'),
+        'PORT': os.getenv('FSTR_DB_PORT', '5432'),
     }
 }
 
